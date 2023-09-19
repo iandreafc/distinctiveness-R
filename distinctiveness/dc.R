@@ -86,16 +86,16 @@ dc_frame <- function(dc, g, measures) {
     f$D1 <- unlist(dc$D1)
   }
   if ("D2" %in% measures) {
-    f$D2 <- unlist(dc$D1)
+    f$D2 <- unlist(dc$D2)
   }
   if ("D3" %in% measures) {
-    f$D3 <- unlist(dc$D1)
+    f$D3 <- unlist(dc$D3)
   }
   if ("D4" %in% measures) {
-    f$D4 <- unlist(dc$D1)
+    f$D4 <- unlist(dc$D4)
   }
   if ("D5" %in% measures) {
-    f$D5 <- unlist(dc$D1)
+    f$D5 <- unlist(dc$D5)
   }
   return(f)
 }
