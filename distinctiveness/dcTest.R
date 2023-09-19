@@ -102,4 +102,4 @@ unlist(V(g_dir)[1]$name)
 
 v_names(g_dir)
 
-distinctiveness(g_dir, alpha = 2, normalize = TRUE)
+distinctiveness(g_dir, alpha = 2, normalize = TRUE))

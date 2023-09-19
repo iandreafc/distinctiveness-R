@@ -80,35 +80,49 @@ v_names <- function(g) {
   return(cee)
 }
 
-dc_frame <- function(dc, g) {
-  return(
-    data.frame(
-      Node = v_names(g), 
-      D1 = unlist(dc$D1), 
-      D2 = unlist(dc$D2),
-      D3 = unlist(dc$D3),
-      D4 = unlist(dc$D4),
-      D5 = unlist(dc$D5)
-    )
-  )
+dc_frame <- function(dc, g, measures) {
+  f <- data.frame(Node = v_names(g))
+  if ("D1" %in% measures) {
+    f$D1 <- unlist(dc$D1)
+  }
+  if ("D2" %in% measures) {
+    f$D2 <- unlist(dc$D1)
+  }
+  if ("D3" %in% measures) {
+    f$D3 <- unlist(dc$D1)
+  }
+  if ("D4" %in% measures) {
+    f$D4 <- unlist(dc$D1)
+  }
+  if ("D5" %in% measures) {
+    f$D5 <- unlist(dc$D1)
+  }
+  return(f)
 }
 
-dc_frame_dir <- function(dc, g) {
-  return(
-    data.frame(
-    Node = v_names(g), 
-    D1_IN = unlist(dc$D1_IN), 
-    D2_IN = unlist(dc$D2_IN),
-    D3_IN = unlist(dc$D3_IN),
-    D4_IN = unlist(dc$D4_IN),
-    D5_IN = unlist(dc$D5_IN),
-    D1_OUT = unlist(dc$D1_OUT),
-    D2_OUT = unlist(dc$D2_OUT),
-    D3_OUT = unlist(dc$D3_OUT),
-    D4_OUT = unlist(dc$D4_OUT),
-    D5_OUT = unlist(dc$D5_OUT)
-    )
-  )
+dc_frame_dir <- function(dc, g, measures) {
+  f <- data.frame(Node = v_names(g))
+  if ("D1" %in% measures) {
+    f$D1_IN <- unlist(dc$D1_IN)
+    f$D1_OUT <- unlist(dc$D1_OUT)
+  }
+  if ("D2" %in% measures) {
+    f$D2_IN <- unlist(dc$D2_IN)
+    f$D2_OUT <- unlist(dc$D2_OUT)
+  }
+  if ("D3" %in% measures) {
+    f$D3_IN <- unlist(dc$D3_IN)
+    f$D3_OUT <- unlist(dc$D3_OUT)
+  }
+  if ("D4" %in% measures) {
+    f$D4_IN <- unlist(dc$D4_IN)
+    f$D4_OUT <- unlist(dc$D4_OUT)
+  }
+  if ("D5" %in% measures) {
+    f$D5_IN <- unlist(dc$D5_IN)
+    f$D5_OUT <- unlist(dc$D5_OUT)
+  }
+  return(f)
 }
 
 process_alpha <- function(alpha) {
@@ -674,7 +688,7 @@ distinctiveness <- function(G, alpha = 1, normalize = FALSE,
             "D2_OUT" = d2_out, 
             "D3_OUT" = d3_out, 
             "D4_OUT" = d4_out, 
-            "D5_OUT" = d5_out), G))
+            "D5_OUT" = d5_out), G, measures))
   }
   
   else {
@@ -747,6 +761,6 @@ distinctiveness <- function(G, alpha = 1, normalize = FALSE,
       "D2" = d2,
       "D3" = d3,
       "D4" = d4,
-      "D5" = d5), G))
+      "D5" = d5), G, measures))
   }
 }
