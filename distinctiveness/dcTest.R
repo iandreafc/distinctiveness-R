@@ -87,7 +87,7 @@ g_prime <- copy_graph(g)
 plot(g_prime, edge.width = E(g)$weight)
 
 g_dir <- make_empty_graph(directed = TRUE) %>%
-  add_vertices(1, name = "A") %>%
+  add_vertices(1) %>%
   add_vertices(1, name = "B") %>%
   add_vertices(1, name = "C") %>%
   add_vertices(1, name = "D") %>%
@@ -102,4 +102,10 @@ unlist(V(g_dir)[1]$name)
 
 v_names(g_dir)
 
-distinctiveness(g_dir, alpha = 2, normalize = TRUE))
+distinctiveness(g_dir, alpha = 2, normalize = TRUE)
+
+g_ex_1 <- erdos.renyi.game(1000, .1, "gnm")
+E(g_ex_1)$weight <- runif(length(E(g_ex_1)), 1, 5)
+plot(g_ex_1)
+write_graph(g_ex_1, "ex1", "graphml")
+distinctiveness(g_ex_1)

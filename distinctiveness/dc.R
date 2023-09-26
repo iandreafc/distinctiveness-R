@@ -75,7 +75,13 @@ v_names <- function(g) {
   cee <- c()
   vs <- V(g)
   for (i in 1:n) {
-    cee <- append(cee, unlist(vs[i]$name))
+    name <- unlist(vs[i]$name)
+    if (is.na(name)) {
+      cee <- append(cee, i)
+    }
+    else {
+      cee <- append(cee, name)
+    }
   }
   return(cee)
 }
