@@ -8,14 +8,14 @@ weisumalpha <- function(G, a) {
   wsalength <- gorder(G)
   wei_sum_alpha <- numeric(wsalength)
   if (a != 1) {
-    adj <- get.adjacency(G)
-    for (i in 1:wsalength) {
-      for (j in 1:wsalength) {
-        if(adj[i, j] == 1) {
-          wei_sum_alpha[i] <- wei_sum_alpha[i] + 
-            E(g)[get.edge.ids(G, c(i, j))]$weight ** a
-        }
-      }
+    edges <- cbind(get.edgelist(G, names = FALSE), E(G)$weight)
+    rows <- nrow(edges)
+    for (i in 1:rows) {
+      v_i <- edges[i, 1]
+      v_j <- edges[i, 2]
+      w <- edges[i, 3]
+      wei_sum_alpha[v_i] <- wei_sum_alpha[v_i] + w ** a
+      wei_sum_alpha[v_j] <- wei_sum_alpha[v_j] + w ** a
     }
   }
   else {
@@ -31,17 +31,14 @@ weiinoutsumalpha <- function(G, a) {
   wei_outsum_alpha <- numeric(wsalength)
   wei_insum_alpha <- numeric(wsalength)
   if (a != 1) {
-    adj <- get.adjacency(G)
-    for (i in 1:nrow(adj)) {
-      for (j in 1:ncol(adj)) {
-        if(adj[i, j] == 1) {
-          curr_weight = E(G)[get.edge.ids(G, c(i, j))]$weight
-          wei_outsum_alpha[i] <- wei_outsum_alpha[i] + 
-            (curr_weight) ** a
-          wei_insum_alpha[j] <- wei_insum_alpha[j] + 
-            (curr_weight) ** a
-        }
-      }
+    edges <- cbind(get.edgelist(G, names = FALSE), E(G)$weight)
+    rows <- nrow(edges)
+    for (i in 1:rows) {
+      v_i <- edges[i, 1]
+      v_j <- edges[i, 2]
+      w <- edges[i, 3]
+      wei_outsum_alpha[v_i] <- wei_outsum_alpha[v_i] + w ** a
+      wei_insum_alpha[v_j] <- wei_insum_alpha[v_j] + w ** a
     }
   }
   else {
@@ -151,15 +148,10 @@ process_alpha <- function(alpha) {
 }
 
 check_weights <- function(G) {
-  n <- gorder(G)
-  adj <- get.adjacency(G)
-  for (i in 1:nrow(adj)) {
-    for (j in 1:ncol(adj)) {
-      if(adj[i, j] == 1) {
-        if(E(G)[get.edge.ids(G, c(i, j))]$weight < 1) {
-          return(TRUE)
-        }
-      }
+  weights <- E(G)$weight
+  for (w in weights) {
+    if (w < 1) {
+      return(TRUE)
     }
   }
   return(FALSE)
@@ -168,17 +160,16 @@ check_weights <- function(G) {
 calculate_d1 <- function(G, alpha, n) {
   n1 <- n - 1
   d1 <- numeric(n)
-  adj <- get.adjacency(G)
-  for (i in 1:nrow(adj)) {
-    for (j in 1:ncol(adj)) {
-      if(adj[i, j] == 1) {
-        w <- E(G)[get.edge.ids(G, c(i, j))]$weight
-        deg_i <- degree(G, v = i)
-        deg_j <- degree(G, v = j)
-        d1[i] <- d1[i] + w * log10(n1 / deg_j ** alpha)
-        #d1[j] <- d1[j] + w * log10(n1 / deg_i ** alpha)
-      }
-    }
+  edges <- cbind(get.edgelist(G, names = FALSE), E(G)$weight)
+  rows <- nrow(edges)
+  for (i in 1:rows) {
+    v_i <- edges[i, 1]
+    v_j <- edges[i, 2]
+    w <- edges[i, 3]
+    deg_i <- degree(G, v = v_i)
+    deg_j <- degree(G, v = v_j)
+    d1[v_i] <- d1[v_i] + w * log10(n1 / deg_j ** alpha)
+    d1[v_j] <- d1[v_j] + w * log10(n1 / deg_i ** alpha)
   }
   return(d1)
 }
@@ -187,17 +178,17 @@ calculate_d1_directed <- function(G, alpha, n) {
   n1 <- n - 1
   d1_in <- numeric(n)
   d1_out <- numeric(n)
-  adj <- get.adjacency(G)
-  for (i in 1:nrow(adj)) {
-    for (j in 1:ncol(adj)) {
-      if(adj[i, j] == 1) {
-        w <- E(G)[get.edge.ids(G, c(i, j))]$weight
-        outdeg_i <- degree(G, v = i, mode = "out")
-        indeg_j <- degree(G, v = j, mode = "in")
-        d1_in[j] <- d1_in[j] + w * log10(n1 / outdeg_i ** alpha)
-        d1_out[i] <- d1_out[i] + w * log10(n1 / indeg_j ** alpha)
-      }
-    }
+  
+  edges <- cbind(get.edgelist(G, names = FALSE), E(G)$weight)
+  rows <- nrow(edges)
+  for (i in 1:rows) {
+    v_i <- edges[i, 1]
+    v_j <- edges[i, 2]
+    w <- edges[i, 3]
+    outdeg_i <- degree(G, v = v_i, mode = "out")
+    indeg_j <- degree(G, v = v_j, mode = "in")
+    d1_out[v_i] <- d1_out[v_i] + w * log10(n1 / indeg_j ** alpha)
+    d1_in[v_j] <- d1_in[v_j] + w * log10(n1 / outdeg_i ** alpha)
   }
   return(list(d1_in, d1_out))
 }
@@ -205,18 +196,18 @@ calculate_d1_directed <- function(G, alpha, n) {
 calculate_d2 <- function(G, alpha, n) {
   n1 <- n - 1
   d2 <- numeric(n)
-  adj <- get.adjacency(G)
-  for (i in 1:nrow(adj)) {
-    for (j in 1:ncol(adj)) {
-      if(adj[i, j] == 1) {
-        #w <- E(G)[get.edge.ids(G, c(i, j))]$weight
-        deg_i <- degree(G, v = i)
-        deg_j <- degree(G, v = j)
-        d2[i] <- d2[i] + log10(n1 / deg_j ** alpha)
-        #d1[j] <- d1[j] + log10(n1 / deg_i ** alpha)
-      }
-    }
+  edges <- cbind(get.edgelist(G, names = FALSE), E(G)$weight)
+  rows <- nrow(edges)
+  
+  for (i in 1:rows) {
+    v_i <- edges[i, 1]
+    v_j <- edges[i, 2]
+    deg_i <- degree(G, v = v_i)
+    deg_j <- degree(G, v = v_j)
+    d2[v_i] <- d2[v_i] + log10(n1 / deg_j ** alpha)
+    d2[v_j] <- d2[v_j] + log10(n1 / deg_i ** alpha)
   }
+  
   return(d2)
 }
 
@@ -224,18 +215,16 @@ calculate_d2_directed <- function(G, alpha, n) {
   n1 <- n - 1
   d2_in <- numeric(n)
   d2_out <- numeric(n)
-  adj <- get.adjacency(G)
-  for (i in 1:nrow(adj)) {
-    for (j in 1:ncol(adj)) {
-      if(adj[i, j] == 1) {
-        #w <- E(G)[get.edge.ids(G, c(i, j))]$weight
-        outdeg_i <- degree(G, v = i, mode = "out")
-        indeg_j <- degree(G, v = j, mode = "in")
-        d2_in[j] <- d2_in[j] + log10(n1 / outdeg_i ** alpha)
-        d2_out[i] <- d2_out[i] + log10(n1 / indeg_j ** alpha)
-        
-      }
-    }
+  
+  edges <- cbind(get.edgelist(G, names = FALSE), E(G)$weight)
+  rows <- nrow(edges)
+  for (i in 1:rows) {
+    v_i <- edges[i, 1]
+    v_j <- edges[i, 2]
+    outdeg_i <- degree(G, v = v_i, mode = "out")
+    indeg_j <- degree(G, v = v_j, mode = "in")
+    d2_out[v_i] <- d2_out[v_i] + log10(n1 / indeg_j ** alpha)
+    d2_in[v_j] <- d2_in[v_j] + log10(n1 / outdeg_i ** alpha)
   }
   return(list(d2_in, d2_out))
 }
@@ -245,20 +234,24 @@ calculate_d3 <- function(G, alpha, n) {
   wsa <- weisumalpha(G, alpha)
   n1 <- n - 1
   d3 <- numeric(n)
-  adj <- get.adjacency(G)
-  for (i in 1:nrow(adj)) {
-    for (j in 1:ncol(adj)) {
-      if(adj[i, j] == 1) {
-        w <- E(G)[get.edge.ids(G, c(i, j))]$weight
-        #deg_i <- degree(G, v = i)
-        deg_j <- degree(G, v = j)
-        d3[i] <- d3[i] + w * log10(
-          total
-          / (wsa[j] - w ** alpha + 1)
-        )
-        #d3[j] <- d3[j] + w * log10(n1 / deg_i ** alpha)
-      }
-    }
+  
+  edges <- cbind(get.edgelist(G, names = FALSE), E(G)$weight)
+  rows <- nrow(edges)
+  for (i in 1:rows) {
+    v_i <- edges[i, 1]
+    v_j <- edges[i, 2]
+    w <- edges[i, 3]
+    deg_i <- degree(G, v = v_i)
+    deg_j <- degree(G, v = v_j)
+    d3[v_i] <- d3[v_i] + w * log10(
+      total
+      / (wsa[v_j] - w ** alpha + 1)
+    )
+    
+    d3[v_j] <- d3[v_j] + w * log10(
+      total
+      / (wsa[v_i] - w ** alpha + 1)
+    )
   }
   return(d3)
 }
@@ -271,47 +264,49 @@ calculate_d3_directed <- function(G, alpha, n) {
   n1 <- n - 1
   d3_in <- numeric(n)
   d3_out <- numeric(n)
-  adj <- get.adjacency(G)
-  for (i in 1:nrow(adj)) {
-    for (j in 1:ncol(adj)) {
-      if(adj[i, j] == 1) {
-        w <- E(G)[get.edge.ids(G, c(i, j))]$weight
-        # outdeg_i <- degree(G, v = i, mode = "out")
-        # indeg_j <- degree(G, v = j, mode = "in")
-        # d3_in[j] <- d3_in[j] + w * log10(n1 / deg_i ** alpha)
-        d3_in[j] <- d3_in[j] + w * log10(
-          total
-          / (wsa_out[i] - w ** alpha + 1)
-        )
-        d3_out[i] <- d3_out[i] + w * log10(
-          total
-          / (wsa_in[j] - w ** alpha + 1)
-        )
-      }
-    }
+  
+  edges <- cbind(get.edgelist(G, names = FALSE), E(G)$weight)
+  rows <- nrow(edges)
+  for (i in 1:rows) {
+    v_i <- edges[i, 1]
+    v_j <- edges[i, 2]
+    w <- edges[i, 3]
+    deg_i <- degree(G, v = v_i)
+    deg_j <- degree(G, v = v_j)
+    d3_out[v_i] <- d3_out[v_i] + w * log10(
+      total
+      / (wsa_in[v_j] - w ** alpha + 1)
+    )
+    
+    
+    d3_in[v_j] <- d3_in[v_j] + w * log10(
+      total
+      / (wsa_out[v_i] - w ** alpha + 1)
+    )
   }
   return(list(d3_in, d3_out))
 }
 
 calculate_d4 <- function(G, alpha, n) {
-  #total <- total_wei(G)
   wsa <- weisumalpha(G, alpha)
   n1 <- n - 1
   d4 <- numeric(n)
-  adj <- get.adjacency(G)
-  for (i in 1:nrow(adj)) {
-    for (j in 1:ncol(adj)) {
-      if(adj[i, j] == 1) {
-        w <- E(G)[get.edge.ids(G, c(i, j))]$weight
-        #deg_i <- degree(G, v = i)
-        deg_j <- degree(G, v = j)
-        d4[i] <- d4[i] + w * (
-          w ** alpha / wsa[j]
-        )
-        #d4[j] <- d4[j] + w * log10(n1 / deg_i ** alpha)
-      }
-    }
+  
+  edges <- cbind(get.edgelist(G, names = FALSE), E(G)$weight)
+  rows <- nrow(edges)
+  for (i in 1:rows) {
+    v_i <- edges[i, 1]
+    v_j <- edges[i, 2]
+    w <- edges[i, 3]
+    d4[v_i] <- d4[v_i] + w * (
+      w ** alpha / wsa[v_j]
+    )
+    d4[v_j] <- d4[v_j] + w * (
+      w ** alpha / wsa[v_i]
+    )
   }
+  
+  
   return(d4)
 }
 
@@ -322,19 +317,19 @@ calculate_d4_directed <- function(G, alpha, n) {
   n1 <- n - 1
   d4_in <- numeric(n)
   d4_out <- numeric(n)
-  adj <- get.adjacency(G)
-  for (i in 1:nrow(adj)) {
-    for (j in 1:ncol(adj)) {
-      if(adj[i, j] == 1) {
-        w <- E(G)[get.edge.ids(G, c(i, j))]$weight
-        d4_in[j] <- d4_in[j] + w * (
-          w ** alpha / wsa_out[i]
-        )
-        d4_out[i] <- d4_out[i] + w * (
-          w ** alpha / wsa_in[j]
-        )
-      }
-    }
+  
+  edges <- cbind(get.edgelist(G, names = FALSE), E(G)$weight)
+  rows <- nrow(edges)
+  for (i in 1:rows) {
+    v_i <- edges[i, 1]
+    v_j <- edges[i, 2]
+    w <- edges[i, 3]
+    d4_out[v_i] <- d4_out[v_i] + w * (
+      w ** alpha / wsa_in[v_j]
+    )
+    d4_in[v_j] <- d4_in[v_j] + w * (
+      w ** alpha / wsa_out[v_i]
+    )
   }
   return(list(d4_in, d4_out))
 }
@@ -344,17 +339,17 @@ calculate_d5 <- function(G, alpha, n) {
   wsa <- weisumalpha(G, alpha)
   n1 <- n - 1
   d5 <- numeric(n)
-  adj <- get.adjacency(G)
-  for (i in 1:nrow(adj)) {
-    for (j in 1:ncol(adj)) {
-      if(adj[i, j] == 1) {
-        w <- E(G)[get.edge.ids(G, c(i, j))]$weight
-        #deg_i <- degree(G, v = i)
-        deg_j <- degree(G, v = j)
-        d5[i] <- d5[i] + (1 / deg_j ** alpha)
-        #d1[j] <- d1[j] + w * log10(n1 / deg_i ** alpha)
-      }
-    }
+  
+  edges <- cbind(get.edgelist(G, names = FALSE), E(G)$weight)
+  rows <- nrow(edges)
+  for (i in 1:rows) {
+    v_i <- edges[i, 1]
+    v_j <- edges[i, 2]
+    w <- edges[i, 3]
+    deg_i <- degree(G, v = v_i)
+    deg_j <- degree(G, v = v_j)
+    d5[v_i] <- d5[v_i] + (1 / deg_j ** alpha)
+    d5[v_j] <- d5[v_j] + + (1 / deg_i ** alpha)
   }
   return(d5)
 }
@@ -363,48 +358,38 @@ calculate_d5_directed <- function(G, alpha, n) {
   n1 <- n - 1
   d5_in <- numeric(n)
   d5_out <- numeric(n)
-  adj <- get.adjacency(G)
-  for (i in 1:nrow(adj)) {
-    for (j in 1:ncol(adj)) {
-      if(adj[i, j] == 1) {
-        w <- E(G)[get.edge.ids(G, c(i, j))]$weight
-        outdeg_i <- degree(G, v = i, mode = "out")
-        indeg_j <- degree(G, v = j, mode = "in")
-        d5_in[j] <- d5_in[j] + (1 / outdeg_i ** alpha)
-        d5_out[i] <- d5_out[i] + (1 / indeg_j ** alpha)
-      }
-    }
+  
+  edges <- cbind(get.edgelist(G, names = FALSE), E(G)$weight)
+  rows <- nrow(edges)
+  for (i in 1:rows) {
+    v_i <- edges[i, 1]
+    v_j <- edges[i, 2]
+    w <- edges[i, 3]
+    outdeg_i <- degree(G, v = v_i, mode = "out")
+    indeg_j <- degree(G, v = v_j, mode = "in")
+    d5_out[v_i] <- d5_out[v_i] + (1 / indeg_j ** alpha)
+    d5_in[v_j] <- d5_in[v_j] + (1 / outdeg_i ** alpha)
   }
   return(list(d5_in, d5_out))
 }
 
 max_weight <- function(G, n) {
   max <- 0
-  adj <- get.adjacency(G)
-  for (i in 1:nrow(adj)) {
-    for (j in 1:ncol(adj)) {
-      if(adj[i, j] == 1) {
-        w <- E(G)[get.edge.ids(G, c(i, j))]$weight
-        if(w > max || is.nan(max)) {
-          max <- w
-        }
-      }
+  weights <- E(G)$weight
+  for (w in weights) {
+    if (w > max) {
+      max <- w
     }
   }
   return(max)
 }
 
 min_weight <- function(G, n) {
-  min <- NaN
-  adj <- get.adjacency(G)
-  for (i in 1:nrow(adj)) {
-    for (j in 1:ncol(adj)) {
-      if(adj[i, j] == 1) {
-        w <- E(G)[get.edge.ids(G, c(i, j))]$weight
-        if(w < min || is.nan(min)) {
-          min <- w
-        }
-      }
+  min <- E(G)$weight[1]
+  weights <- E(G)$weight
+  for (w in weights) {
+    if (w < min) {
+      min <- w
     }
   }
   return(min)
@@ -429,7 +414,7 @@ g_preprocess <- function(G, alpha = 1,
   
   # simplify, sum multiple edges
   if (!(is_simple(G))) {
-    simplify(G, remove.multiple = TRUE, remove.loops = TRUE,
+    G <- simplify(G, remove.multiple = TRUE, remove.loops = TRUE,
              edge.attr.comb = "sum")
   }
   
@@ -491,9 +476,6 @@ g_preprocess <- function(G, alpha = 1,
     "deg" = deg,
     "indeg" = indeg,
     "outdeg" = outdeg,
-    # wei_insum_alpha_list,
-    # wei_outsum_alpha_list,
-    # wei_sum_alpha_list,
     "total" = totalWEI,
     "maxwij" = maxwij,
     "minwij" = minwij,
@@ -505,19 +487,6 @@ g_preprocess <- function(G, alpha = 1,
 
 distinctiveness <- function(G, alpha = 1, normalize = FALSE,
                             measures = c("D1", "D2", "D3", "D4", "D5")) {
-  # ( G,
-  #   n1,
-  #   deg,
-  #   indeg,
-  #   outdeg,
-  #   wei_insum_alpha_list,
-  #   wei_outsum_alpha_list,
-  #   wei_sum_alpha_list,
-  #   totalWEI,
-  #   maxwij,
-  #   minwij,
-  #   hasedges,
-  # ) <- g_preprocess(G, alpha=alpha, measures=measures)
   
   pre <- g_preprocess(G, alpha=alpha, measures=measures)
   G <- pre$G
@@ -525,9 +494,6 @@ distinctiveness <- function(G, alpha = 1, normalize = FALSE,
   deg <- pre$deg
   indeg <- pre$indeg
   outdeg <- pre$outdeg
-  # wsa_in <- pre[6]
-  # wsa_out <- pre[7]
-  # wsa <- pre[8]
   total <- pre$total
   maxwij <- pre$maxwij
   minwij <- pre$minwij
