@@ -1,8 +1,5 @@
-if(!require('igraph')) {
-  install.packages('igraph')
-  library('igraph')
-}
-
+#' @import igraph
+NULL
 
 weisumalpha <- function(G, a) {
   wsalength <- gorder(G)
@@ -485,6 +482,16 @@ g_preprocess <- function(G, alpha = 1,
   
 }
 
+#' The main function; oversees the calculations of Distinctiveness Centrality
+#' 
+#' @param G the given graph
+#' @param alpha the given exponent for punishing highly connected nodes
+#' @param normalize when TRUE, the function normalizes output metrics 
+#' to allow for comparison with other graphs. Defaults to FALSE
+#' @param measures the measures of Distinctiveness Centrality to be computed
+#' @return a data frame containing the specified calculated measures of
+#' Distinctiveness Centrality for the given graph
+#' @export
 distinctiveness <- function(G, alpha = 1, normalize = FALSE,
                             measures = c("D1", "D2", "D3", "D4", "D5")) {
   
