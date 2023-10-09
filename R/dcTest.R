@@ -1,5 +1,5 @@
 # setwd("C:/Users/IV/Desktop/UniPG/distinctiveness-R/R")
-# source("dc.R")
+# source("R/dc.R")
 # 
 # g <- make_empty_graph(directed = FALSE) %>%
 #   add_vertices(1, name = "A") %>%
@@ -106,9 +106,9 @@
 #   add_vertices(1, name = "D") %>%
 #   add_vertices(1, name = "E") %>%
 #   add_vertices(1, name = "F")
-# g_dups <- g_dups + edge(1, 5, weight = 5) + edge(1, 2, weight = 2) + 
-#   edge(2, 6, weight = 5) + edge(2, 3, weight = 2) + 
-#   edge(2, 4, weight = 2) + edge(3, 4, weight = 5) + 
+# g_dups <- g_dups + edge(1, 5, weight = 5) + edge(1, 2, weight = 2) +
+#   edge(2, 6, weight = 5) + edge(2, 3, weight = 2) +
+#   edge(2, 4, weight = 2) + edge(3, 4, weight = 5) +
 #   edge(2, 4, weight = 3) + edge(3, 4, weight = 5)
 # plot(g_dups, edge.width = E(g_dups)$weight)
 # distinctiveness(g_dups)
