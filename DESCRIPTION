@@ -1,0 +1,18 @@
+Type: Package
+Package: distinctiveness
+Title: Distinctiveness Centrality
+Version: 1.0
+Authors@R: c(
+    person("Andrea", "Fronzetti Colladon", role = c("aut")),
+    person("Luis", "Maas", email = "lcmaas4@gmail.com", role = c("aut", "cre"))
+  )
+Description: An R library to calculate Distinctiveness Centrality in social networks. 
+	For formulas and descriptions, see: https://doi.org/10.1371/journal.pone.0233276.
+License: MIT + file LICENSE
+URL: https://github.com/iandreafc/distinctiveness-R, https://doi.org/10.1371/journal.pone.0233276
+Depends: 
+    R (>= 3.5.0)
+Imports:
+	igraph
+Encoding: UTF-8
+RoxygenNote: 7.2.3
