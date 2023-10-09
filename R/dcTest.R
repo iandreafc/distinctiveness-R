@@ -65,17 +65,18 @@
 # g_prime <- copy_graph(g)
 # plot(g_prime, edge.width = E(g)$weight)
 # 
-# g_dir <- make_empty_graph(directed = TRUE) %>%
-#   add_vertices(1) %>%
-#   add_vertices(1, name = "B") %>%
-#   add_vertices(1, name = "C") %>%
-#   add_vertices(1, name = "D") %>%
-#   add_vertices(1, name = "E") %>%
-#   add_vertices(1, name = "F")
-# g_dir <- g_dir + edge(1, 5, weight = 5) + edge(1, 2, weight = 6) +
-#   edge(2, 1, weight = 2) + edge(2, 6, weight = 5) + edge(2, 3, weight = 2) +
-#   edge(2, 4, weight = 2) + edge(3, 4, weight = 3) + edge(4, 3, weight = 5)
-# plot(g_dir, edge.width = E(g_dir)$weight)
+g_dir <- make_empty_graph(directed = TRUE) %>%
+  add_vertices(1) %>%
+  add_vertices(1, name = "B") %>%
+  add_vertices(1, name = "C") %>%
+  add_vertices(1, name = "D") %>%
+  add_vertices(1, name = "E") %>%
+  add_vertices(1, name = "F")
+g_dir <- g_dir + edge(1, 5, weight = 5) + edge(1, 2, weight = 6) +
+  edge(2, 1, weight = 2) + edge(2, 6, weight = 5) + edge(2, 3, weight = 2) +
+  edge(2, 4, weight = 2) + edge(3, 4, weight = 3) + edge(4, 3, weight = 5)
+plot(g_dir, edge.width = E(g_dir)$weight)
+E(g_dir)$weight
 # 
 # unlist(V(g_dir)[1]$name)
 # 

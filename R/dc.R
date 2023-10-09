@@ -70,7 +70,7 @@ v_names <- function(g) {
   vs <- V(g)
   for (i in 1:n) {
     name <- unlist(vs[i]$name)
-    if (is.na(name)) {
+    if (!isTRUE(name) || is.na(name)) {
       cee <- append(cee, i)
     }
     else {
@@ -415,6 +415,10 @@ g_preprocess <- function(G, alpha = 1,
              edge.attr.comb = "sum")
   }
   
+  if (is.null(E(G)$weight)) {
+    G <- set.edge.attribute(G, "weight", index = 1:gsize(G), value = 1)
+  }
+  
   if(check_weights(G)) {
     print("Graph has edges with weight < 1. Edge weights must be >= 1.")
     return(list(NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN))
@@ -491,6 +495,18 @@ g_preprocess <- function(G, alpha = 1,
 #' @param measures the measures of Distinctiveness Centrality to be computed
 #' @return a data frame containing the specified calculated measures of
 #' Distinctiveness Centrality for the given graph
+#' @examples
+#' 
+#' g <- igraph::erdos.renyi.game(20, 50, type = "gnm", directed = FALSE)
+#' plot(g)
+#' distinctiveness(g)
+#' distinctiveness(g, alpha = list(2, 1, 3, 2, 4), measures = c("D1", "D3", "D4"))
+#' 
+#' g_dir <- igraph::erdos.renyi.game(20, 50, type = "gnm", directed = TRUE)
+#' plot(g_dir)
+#' distinctiveness(g_dir)
+#' distinctiveness(g_dir, alpha = 2, normalize = TRUE, measures = c("D2", "D5"))
+#' 
 #' @export
 distinctiveness <- function(G, alpha = 1, normalize = FALSE,
                             measures = c("D1", "D2", "D3", "D4", "D5")) {

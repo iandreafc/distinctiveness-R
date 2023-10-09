@@ -28,3 +28,16 @@ Distinctiveness Centrality for the given graph
 \description{
 The main function; oversees the calculations of Distinctiveness Centrality
 }
+\examples{
+
+g <- igraph::erdos.renyi.game(20, 50, type = "gnm", directed = FALSE)
+plot(g)
+distinctiveness(g)
+distinctiveness(g, alpha = list(2, 1, 3, 2, 4), measures = c("D1", "D3", "D4"))
+
+g_dir <- igraph::erdos.renyi.game(20, 50, type = "gnm", directed = TRUE)
+plot(g_dir)
+distinctiveness(g_dir)
+distinctiveness(g_dir, alpha = 2, normalize = TRUE, measures = c("D2", "D5"))
+
+}
