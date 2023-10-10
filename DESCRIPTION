@@ -6,10 +6,10 @@ Authors@R: c(
     person("Andrea", "Fronzetti Colladon", email = "andrea.fronzetticolladon@unipg.it", role = c("aut", "cre")),
     person("Luis", "Maas", email = "lcmaas4@gmail.com", role = c("aut"))
   )
-Description: An R library to calculate Distinctiveness Centrality in social networks. 
-	For formulas and descriptions, see: <https://doi.org/10.1371/journal.pone.0233276>.
+Description: Calculates Distinctiveness Centrality in social networks. 
+	For formulas and descriptions, see: <doi:10.1371/journal.pone.0233276>.
 License: MIT + file LICENSE
-URL: https://github.com/iandreafc/distinctiveness-R, https://doi.org/10.1371/journal.pone.0233276
+URL: https://github.com/iandreafc/distinctiveness-R, https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0233276
 Depends: 
     R (>= 3.5.0)
 Imports:
