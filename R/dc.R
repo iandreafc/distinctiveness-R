@@ -131,7 +131,7 @@ process_alpha <- function(alpha) {
       if (! (is.numeric(i) || is.integer(i))) {
         # not valid when one of the values in alphalist is not a number
         return(NaN)
-        print("one alpha value not a number")
+        message("one alpha value not a number")
       }
     }
     return(alpha)
@@ -396,7 +396,7 @@ g_preprocess <- function(G, alpha = 1,
                          measures = c("D1", "D2", "D3", "D4", "D5")) {
   alphalist <- process_alpha(alpha)
   if (!is.list(alphalist)) {
-    print("For alpha, please input a single number or a list of five numbers.")
+    message("For alpha, please input a single number or a list of five numbers.")
     return(list(NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN))
   }
   
@@ -405,7 +405,7 @@ g_preprocess <- function(G, alpha = 1,
   n1 <- n - 1
 
   if (n1 < 2) {
-    print("Input graph must have at least three nodes.")
+    message("Input graph must have at least three nodes.")
     return(list(NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN))
   }
   
@@ -420,7 +420,7 @@ g_preprocess <- function(G, alpha = 1,
   }
   
   if(check_weights(G)) {
-    print("Graph has edges with weight < 1. Edge weights must be >= 1.")
+    message("Graph has edges with weight < 1. Edge weights must be >= 1.")
     return(list(NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN))
   }
   
@@ -464,7 +464,7 @@ g_preprocess <- function(G, alpha = 1,
   }
   
   else {
-    print("The graph has no edges (after simplification). The function will
+    message("The graph has no edges (after simplification). The function will
           return all zeroes, regardless of normalization.")
     hasedges <- FALSE
     maxwij <- NaN
@@ -526,9 +526,9 @@ distinctiveness <- function(G, alpha = 1, normalize = FALSE,
   
   for (a in alphalist) {
     if (unlist(a) < 1) {
-      print("Alpha should be >= 1.")
+      message("Alpha should be >= 1.")
       if (normalize) {
-        print("Normalization deactivated for all metrics.")
+        message("Normalization deactivated for all metrics.")
         normalize <- FALSE
       }
     }
