@@ -13,6 +13,7 @@ install.packages("distinctiveness")
 
 ## Quick Start and Tutorials
 - A quick-start demo is in [this notebook](DCDemoR.ipynb).
+- The package is documented [here](https://iandreafc.github.io/distinctiveness-R/).
 
 ## Please cite as
 Fronzetti Colladon, A., & Naldi, M. (2020). Distinctiveness Centrality in Social Networks. *PLoS ONE*, *15*(5), e0233276. [https://doi.org/10.1371/journal.pone.0233276](https://doi.org/10.1371/journal.pone.0233276)
