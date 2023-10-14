@@ -14,7 +14,7 @@ distinctiveness(
 \arguments{
 \item{G}{the given graph}
 
-\item{alpha}{the given exponent for punishing highly connected nodes}
+\item{alpha}{the given exponent for penalizing highly connected nodes}
 
 \item{normalize}{when TRUE, the function normalizes output metrics 
 to allow for comparison with other graphs. Defaults to FALSE}

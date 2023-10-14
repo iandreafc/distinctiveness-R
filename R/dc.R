@@ -489,7 +489,7 @@ g_preprocess <- function(G, alpha = 1,
 #' The main function; oversees the calculations of Distinctiveness Centrality
 #' 
 #' @param G the given graph
-#' @param alpha the given exponent for punishing highly connected nodes
+#' @param alpha the given exponent for penalizing highly connected nodes
 #' @param normalize when TRUE, the function normalizes output metrics 
 #' to allow for comparison with other graphs. Defaults to FALSE
 #' @param measures the measures of Distinctiveness Centrality to be computed
