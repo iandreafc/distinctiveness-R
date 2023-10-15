@@ -2,9 +2,7 @@
 
 **Distinctiveness** is an R package to calculate *Distinctiveness Centrality* in social and complex networks.
 
-Distinctiveness Centrality is a set of 5 network metrics that attribute larger importance to distinctive connections, i.e. to nodes which have links to loosely connected peers. Revisiting degree and weighted degree centrality, all these metrics penalize connections to hubs or nodes that are very well connected. Distinctiveness measures might serve the identification of strategic social actors, for example those with peripheral connections that keep the network together, avoiding fragmentation. 
-
-See the [functions page](functions.md) for more information.
+Distinctiveness Centrality is a set of 5 network metrics that attribute larger importance to distinctive connections, i.e. to nodes which have links to loosely connected peers. Revisiting degree and weighted degree centrality, all these metrics penalize connections to hubs or nodes that are very well connected. Distinctiveness measures might serve the identification of strategic social actors, for example those with peripheral connections that keep the network together, avoiding fragmentation.
 
 ### Installation
 Install by running:
@@ -16,7 +14,7 @@ Install by running:
 Functions are documented below, on this page.
 
 ### Tutorial and Source Code
-Tutorials and the source code are available in the [GitHub repository](https://github.com/iandreafc/distinctiveness).
+Tutorials and the source code are available in the [GitHub repository](https://github.com/iandreafc/distinctiveness-R).
 
 ### Please cite as
 
@@ -52,14 +50,14 @@ Similarly to the case of in- and out-degree, it is possible to calculate in- and
 
 **`distinctiveness(G, alpha = 1, normalize = False, measures=["D1", "D2", "D3", "D4", "D5"])`**  : calculates distinctiveness centrality for directed and undirected graphs.
 
-* **G** : `Graph`
+* **G** : `Graph`.
   An [igraph](https://r.igraph.org/) Graph. Multigraphs are automatically transformed into graphs, by summing arc weights. Please note that each arc is expected to have a weight attribute, otherwise each missing weight will be considered equal to 1. Weights have to be >= 1.
-* **alpha** : `float` or `list`, optional (default = 1)
+* **alpha** : `float` or `list`, optional (default = 1).
   Alpha must be a number greater or equal to 1. It represents the value of the alpha parameter used in the formulas of distinctiveness centrality. If one value is provided, it will be used for all the five metrics. Alternatively, alpha can be a list of five numbers, used to specify different coefficients for the different metrics (e.g. alpha = list(1, 2, 1, 1, 3)).
-* **normalize** : `bool`, optional (default = FALSE)
+* **normalize** : `bool`, optional (default = FALSE).
   Normalize can be set to TRUE, to obtain normalized scores for each metric, considering upper and lower bounds. Loose upper
   and lower bounds are used for D3.
-* **measures** : `list`, optional (default = c("D1", "D2", "D3", "D4", "D5"))
+* **measures** : `list`, optional (default = c("D1", "D2", "D3", "D4", "D5")).
   Distinctiveness centrality can be calculated considering 5 different weighting schemes. This parameter can be adjusted to select which metrics should be computed. The default option is to calculate them all.
 
 #### Returns

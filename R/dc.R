@@ -175,7 +175,7 @@ calculate_d1_directed <- function(G, alpha, n) {
   n1 <- n - 1
   d1_in <- numeric(n)
   d1_out <- numeric(n)
-  
+
   edges <- cbind(get.edgelist(G, names = FALSE), E(G)$weight)
   rows <- nrow(edges)
   for (i in 1:rows) {
@@ -195,7 +195,7 @@ calculate_d2 <- function(G, alpha, n) {
   d2 <- numeric(n)
   edges <- cbind(get.edgelist(G, names = FALSE), E(G)$weight)
   rows <- nrow(edges)
-  
+
   for (i in 1:rows) {
     v_i <- edges[i, 1]
     v_j <- edges[i, 2]
@@ -204,7 +204,7 @@ calculate_d2 <- function(G, alpha, n) {
     d2[v_i] <- d2[v_i] + log10(n1 / deg_j ** alpha)
     d2[v_j] <- d2[v_j] + log10(n1 / deg_i ** alpha)
   }
-  
+
   return(d2)
 }
 
@@ -212,7 +212,7 @@ calculate_d2_directed <- function(G, alpha, n) {
   n1 <- n - 1
   d2_in <- numeric(n)
   d2_out <- numeric(n)
-  
+
   edges <- cbind(get.edgelist(G, names = FALSE), E(G)$weight)
   rows <- nrow(edges)
   for (i in 1:rows) {
@@ -231,7 +231,7 @@ calculate_d3 <- function(G, alpha, n) {
   wsa <- weisumalpha(G, alpha)
   n1 <- n - 1
   d3 <- numeric(n)
-  
+
   edges <- cbind(get.edgelist(G, names = FALSE), E(G)$weight)
   rows <- nrow(edges)
   for (i in 1:rows) {
@@ -244,7 +244,7 @@ calculate_d3 <- function(G, alpha, n) {
       total
       / (wsa[v_j] - w ** alpha + 1)
     )
-    
+
     d3[v_j] <- d3[v_j] + w * log10(
       total
       / (wsa[v_i] - w ** alpha + 1)
@@ -261,7 +261,7 @@ calculate_d3_directed <- function(G, alpha, n) {
   n1 <- n - 1
   d3_in <- numeric(n)
   d3_out <- numeric(n)
-  
+
   edges <- cbind(get.edgelist(G, names = FALSE), E(G)$weight)
   rows <- nrow(edges)
   for (i in 1:rows) {
@@ -274,8 +274,8 @@ calculate_d3_directed <- function(G, alpha, n) {
       total
       / (wsa_in[v_j] - w ** alpha + 1)
     )
-    
-    
+
+
     d3_in[v_j] <- d3_in[v_j] + w * log10(
       total
       / (wsa_out[v_i] - w ** alpha + 1)
@@ -288,7 +288,7 @@ calculate_d4 <- function(G, alpha, n) {
   wsa <- weisumalpha(G, alpha)
   n1 <- n - 1
   d4 <- numeric(n)
-  
+
   edges <- cbind(get.edgelist(G, names = FALSE), E(G)$weight)
   rows <- nrow(edges)
   for (i in 1:rows) {
@@ -302,8 +302,8 @@ calculate_d4 <- function(G, alpha, n) {
       w ** alpha / wsa[v_i]
     )
   }
-  
-  
+
+
   return(d4)
 }
 
@@ -314,7 +314,7 @@ calculate_d4_directed <- function(G, alpha, n) {
   n1 <- n - 1
   d4_in <- numeric(n)
   d4_out <- numeric(n)
-  
+
   edges <- cbind(get.edgelist(G, names = FALSE), E(G)$weight)
   rows <- nrow(edges)
   for (i in 1:rows) {
@@ -336,7 +336,7 @@ calculate_d5 <- function(G, alpha, n) {
   wsa <- weisumalpha(G, alpha)
   n1 <- n - 1
   d5 <- numeric(n)
-  
+
   edges <- cbind(get.edgelist(G, names = FALSE), E(G)$weight)
   rows <- nrow(edges)
   for (i in 1:rows) {
@@ -355,7 +355,7 @@ calculate_d5_directed <- function(G, alpha, n) {
   n1 <- n - 1
   d5_in <- numeric(n)
   d5_out <- numeric(n)
-  
+
   edges <- cbind(get.edgelist(G, names = FALSE), E(G)$weight)
   rows <- nrow(edges)
   for (i in 1:rows) {
@@ -392,14 +392,14 @@ min_weight <- function(G, n) {
   return(min)
 }
 
-g_preprocess <- function(G, alpha = 1, 
+g_preprocess <- function(G, alpha = 1,
                          measures = c("D1", "D2", "D3", "D4", "D5")) {
   alphalist <- process_alpha(alpha)
   if (!is.list(alphalist)) {
     message("For alpha, please input a single number or a list of five numbers.")
     return(list(NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN))
   }
-  
+
   G <- copy_graph(G)
   n <- gorder(G)
   n1 <- n - 1
@@ -408,24 +408,24 @@ g_preprocess <- function(G, alpha = 1,
     message("Input graph must have at least three nodes.")
     return(list(NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN))
   }
-  
+
   # simplify, sum multiple edges
   if (!(is_simple(G))) {
     G <- simplify(G, remove.multiple = TRUE, remove.loops = TRUE,
              edge.attr.comb = "sum")
   }
-  
+
   if (is.null(E(G)$weight)) {
     G <- set.edge.attribute(G, "weight", index = 1:gsize(G), value = 1)
   }
-  
+
   if(check_weights(G)) {
     message("Graph has edges with weight < 1. Edge weights must be >= 1.")
     return(list(NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN))
   }
-  
+
   totalWEI <- total_wei(G)
-  
+
   if (! (is.directed(G))) {
     if ("D1" %in% measures || "D2" %in% measures || "D5" %in% measures) {
       deg <- degree(G, v = 1:n)
@@ -435,7 +435,7 @@ g_preprocess <- function(G, alpha = 1,
     }
     indeg <- outdeg <- NaN
   }
-  
+
   else {
     deg <- NaN
     if ("D1" %in% measures || "D2" %in% measures || "D5" %in% measures) {
@@ -446,7 +446,7 @@ g_preprocess <- function(G, alpha = 1,
       indeg <- outdeg <- NaN
     }
   }
-  
+
   if (gsize(G) > 0) {
     hasedges <- TRUE
     if ("D1" %in% measures || "D3" %in% measures || "D4" %in% measures) {
@@ -462,7 +462,7 @@ g_preprocess <- function(G, alpha = 1,
       minwij <- NaN
     }
   }
-  
+
   else {
     message("The graph has no edges (after simplification). The function will
           return all zeroes, regardless of normalization.")
@@ -470,7 +470,7 @@ g_preprocess <- function(G, alpha = 1,
     maxwij <- NaN
     minwij <- NaN
   }
-  
+
   return(list(
     "G" = G,
     "n1" = n1,
@@ -483,34 +483,34 @@ g_preprocess <- function(G, alpha = 1,
     "hasedges" = hasedges,
     "alphalist" = alphalist
   ))
-  
+
 }
 
 #' The main function; oversees the calculations of Distinctiveness Centrality
-#' 
+#'
 #' @param G the given graph
-#' @param alpha the given exponent for penalizing highly connected nodes
-#' @param normalize when TRUE, the function normalizes output metrics 
+#' @param alpha the given exponent for penalizing connections to highly connected nodes
+#' @param normalize when TRUE, the function normalizes output metrics
 #' to allow for comparison with other graphs. Defaults to FALSE
 #' @param measures the measures of Distinctiveness Centrality to be computed
 #' @return a data frame containing the specified calculated measures of
 #' Distinctiveness Centrality for the given graph
 #' @examples
-#' 
+#'
 #' g <- igraph::erdos.renyi.game(20, 50, type = "gnm", directed = FALSE)
 #' plot(g)
 #' distinctiveness(g)
 #' distinctiveness(g, alpha = list(2, 1, 3, 2, 4), measures = c("D1", "D3", "D4"))
-#' 
+#'
 #' g_dir <- igraph::erdos.renyi.game(20, 50, type = "gnm", directed = TRUE)
 #' plot(g_dir)
 #' distinctiveness(g_dir)
 #' distinctiveness(g_dir, alpha = 2, normalize = TRUE, measures = c("D2", "D5"))
-#' 
+#'
 #' @export
 distinctiveness <- function(G, alpha = 1, normalize = FALSE,
                             measures = c("D1", "D2", "D3", "D4", "D5")) {
-  
+
   pre <- g_preprocess(G, alpha=alpha, measures=measures)
   G <- pre$G
   n1 <- pre$n1
@@ -523,7 +523,7 @@ distinctiveness <- function(G, alpha = 1, normalize = FALSE,
   hasedges <- pre$hasedges
   alphalist <- pre$alphalist
   n <- n1 + 1
-  
+
   for (a in alphalist) {
     if (unlist(a) < 1) {
       message("Alpha should be >= 1.")
@@ -533,11 +533,11 @@ distinctiveness <- function(G, alpha = 1, normalize = FALSE,
       }
     }
   }
-  
+
   if (! hasedges) {
     normalize <- FALSE
   }
-  
+
   if (normalize) {
     if ("D1" %in% measures) {
       d1_max <- log10(n1) * n1 * maxwij
@@ -578,12 +578,12 @@ distinctiveness <- function(G, alpha = 1, normalize = FALSE,
       d5_min <- 0 # considers isolates
     }
   }
-  
+
   else {
     d1_max <- d2_max <- d3_max <- d4_max <- d5_max <- 1
     d1_min <- d2_min <- d3_min <- d4_min <- d5_min <- 0
   }
-  
+
   if (is_directed(G)) {
     if ("D1" %in% measures) {
       d1 <- calculate_d1_directed(G, unlist(alphalist[1]), n)
@@ -674,18 +674,18 @@ distinctiveness <- function(G, alpha = 1, normalize = FALSE,
       }
     }
     return(dc_frame_dir(list
-           ("D1_IN" = d1_in, 
-            "D2_IN" = d2_in, 
+           ("D1_IN" = d1_in,
+            "D2_IN" = d2_in,
             "D3_IN" = d3_in,
-            "D4_IN" = d4_in, 
-            "D5_IN" = d5_in, 
-            "D1_OUT" = d1_out, 
-            "D2_OUT" = d2_out, 
-            "D3_OUT" = d3_out, 
-            "D4_OUT" = d4_out, 
+            "D4_IN" = d4_in,
+            "D5_IN" = d5_in,
+            "D1_OUT" = d1_out,
+            "D2_OUT" = d2_out,
+            "D3_OUT" = d3_out,
+            "D4_OUT" = d4_out,
             "D5_OUT" = d5_out), G, measures))
   }
-  
+
   else {
     if ("D1" %in% measures) {
       d1 <- calculate_d1(G, unlist(alphalist[1]), n)
@@ -752,7 +752,7 @@ distinctiveness <- function(G, alpha = 1, normalize = FALSE,
       }
     }
     return(dc_frame(list(
-      "D1" = d1, 
+      "D1" = d1,
       "D2" = d2,
       "D3" = d3,
       "D4" = d4,
