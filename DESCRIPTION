@@ -1,7 +1,7 @@
 Type: Package
 Package: distinctiveness
 Title: Distinctiveness Centrality
-Version: 1.01
+Version: 1.0.1
 Authors@R: c(
     person("Andrea", "Fronzetti Colladon", email = "andrea.fronzetticolladon@unipg.it", role = c("aut", "cre")),
     person("Luis", "Maas", email = "lcmaas4@gmail.com", role = c("aut"))
